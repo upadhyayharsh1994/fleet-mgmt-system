@@ -34,6 +34,7 @@ export class SpecificBusDetail extends React.Component{
             busDetails:busDetail
         })
 
+        
     
     }
 

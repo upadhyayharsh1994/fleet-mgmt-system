@@ -62,6 +62,8 @@ export class BusDetails extends React.Component
         console.log(this.state.isBusDetails);
     }
    
+
+    
     render(){
         return(
             <div class="floar-container"> 
