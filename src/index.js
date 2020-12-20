@@ -15,7 +15,7 @@ class RootClass extends React.Component
     return(
       <BrowserRouter>
         <div>
-          <Route exact path="/" component={BusDetails}/>
+          <Route path="/" component={BusDetails}/>
         </div>
       </BrowserRouter>
     );
