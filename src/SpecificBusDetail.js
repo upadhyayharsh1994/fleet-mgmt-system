@@ -1,6 +1,6 @@
 import React from "react";
-import { BusDetailForm } from './BusDetailForm';
-
+import { BusDetailForm } from './form/BusDetailForm';
+import  axios  from 'axios';
 export class SpecificBusDetail extends React.Component{
 
     constructor(props)
@@ -8,7 +8,7 @@ export class SpecificBusDetail extends React.Component{
         super(props);
 
         this.state={
-            busId : undefined,
+            busId : props.id,
             busDetails:{}
         }
     }
@@ -16,26 +16,27 @@ export class SpecificBusDetail extends React.Component{
 
     componentWillReceiveProps(props)
     {
-        var busDetail={
-            busName:"Nano",
-            makeYear:"2001",
-            noOfWheels:"4",
-            odometerReading:"20000",
-            airConditioned:"true",
-            capacity:"4",
-            busStatus:"readyToUse",
-            garageId:"2",
-            scheduledDate:"01/01/2021"
-        };
-        // api call
+        var id = props.id;
+        axios.get('http://localhost:8080/fleet/getDetails/'+id).then((bus) => {
 
-        this.setState({
-            busId:props.id,
-            busDetails:busDetail
+            this.setState({
+                busId:props.id,
+                busDetails:bus.data
+            })     
         })
 
-        
-    
+    }
+
+    componentWillMount()
+    {
+        var id = this.state.busId;
+
+        axios.get('http://localhost:8080/fleet/getDetails/'+id).then((bus) => {
+
+            this.setState({
+                busDetails:bus.data
+            })
+        })
     }
 
 
