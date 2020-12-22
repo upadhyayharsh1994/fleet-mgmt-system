@@ -1,5 +1,5 @@
 import React from "react";
-import { BusDetailForm } from './form/BusDetailForm';
+import { BusDetailForm } from '../form/BusDetailForm';
 import  axios  from 'axios';
 export class SpecificBusDetail extends React.Component{
 

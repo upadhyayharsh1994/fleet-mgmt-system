@@ -1,9 +1,9 @@
 import React from "react";
 import { Redirect } from 'react-router-dom';
-import { Form,FormGroup, FormControl, Button} from "react-bootstrap";
+import { Form, Button} from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
-import {getProperty,validateBusDetails} from '../util/Utils'
+import {getProperty,validateBusDetails,getFormData} from '../util/Utils'
 
 export class BusDetailForm extends React.Component{
 
@@ -14,18 +14,21 @@ export class BusDetailForm extends React.Component{
             busDetails:getProperty(props.busObject),
             update:props.update,
             errors:[],
-            redirect:false
+            redirect:false,
+            busImage:null
         } 
+
     }
 
 
     componentWillReceiveProps(props)
     {
-        console.log(props.busObject);
         this.setState({
             busDetails:props.busObject,
             update:props.update
         })
+
+        console.log(this.state.busDetails);
     }
 
     handleChange(e)
@@ -34,11 +37,18 @@ export class BusDetailForm extends React.Component{
         var busDetailLocal = this.state.busDetails;
         var elementName = e.target.name;
         busDetailLocal[elementName] = e.target.value;
-
         this.setState({
                 busDetails: busDetailLocal,
         });
 
+
+    }
+
+    handleImage(e)
+    {
+        this.setState({
+                busImage: e.target.files[0]
+        });
     }
 
     handleSubmit(e)
@@ -58,9 +68,15 @@ export class BusDetailForm extends React.Component{
         }
         else
         {
+
+            var formData = getFormData(this.state.busImage,this.state.busDetails);
             if(this.state.update)
             {
-                axios.post('http://localhost:8080/fleet/editBusDetail',this.state.busDetails).then((result)=>{
+                axios.post('http://localhost:8080/fleet/editBusDetail',formData, 
+                {   
+                    headers: {
+                    'Content-Type':'multipart/form-data'
+                    } }).then((result)=>{
                     console.log(result.status);
                         this.setState({
                             redirect:true,
@@ -72,13 +88,19 @@ export class BusDetailForm extends React.Component{
             }
             else
             {
-                axios.post('http://localhost:8080/fleet/insertBusDetails',this.state.busDetails).then((result)=>{
-                    this.setState({
-                        redirect:true,
-                        errors:error
-                    })
-                    redirect = true;
+                var formData = getFormData(this.state.busImage,this.state.busDetails);
+                axios.post('http://localhost:8080/fleet/insertBusDetails',formData, 
+                {   
+                    headers: {
+                    'Content-Type':'multipart/form-data'
+                    } }).then((result)=>{
+                    console.log(result.status);
+                        this.setState({
+                            redirect:true,
+                            errors:error
+                        })
                 })
+
             }
             return redirect;
         }               
@@ -121,17 +143,19 @@ export class BusDetailForm extends React.Component{
                <Form.Control type="text" name="airConditioner" value={this.state.busDetails.airConditioner} onChange={this.handleChange.bind(this)}/> 
                <Form.Group>Capacity</Form.Group>
                <Form.Control type="text" name="capacity" value={this.state.busDetails.capacity} onChange={this.handleChange.bind(this)}/> 
+               <Form.Group>Bus Image</Form.Group>
+               <Form.File type="file" name="image" accept="image/png, image/jpeg"  onChange={this.handleImage.bind(this)}/> 
                <Form.Group>Status</Form.Group>
                 <Form.Control as="select"
-        className="mr-sm-2"
-        id="inlineFormCustomSelect" 
-        onChange={this.handleChange.bind(this)}
-        value={this.state.busDetails.status}
-        name="status"
-        custom><br/>
+                    className="mr-sm-2"
+                    id="inlineFormCustomSelect" 
+                    onChange={this.handleChange.bind(this)}
+                    value={this.state.busDetails.status}
+                    name="status"
+                    custom><br/>
                     <option value="maintainance">Scheduled For Maintainance</option>
                     <option value="undergoingRepairs">Undergoing Repairs</option>
-                    <option value="readyToUse">Ready To Use</option>
+                    <option value="readyToUse" selected>Ready To Use</option>
                 </Form.Control><br/>
                 <Form.Group>Garage Id</Form.Group>
                 <Form.Control as="select"
@@ -141,7 +165,7 @@ export class BusDetailForm extends React.Component{
         value={this.state.busDetails.garageId}
         name="garageId"
         custom><br/>
-                    <option value="1">1</option>
+                    <option value="1" selected>1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
                     <option value="4">4</option>

@@ -1,10 +1,10 @@
 import React from "react";
 
-import {SpecificBusDetail} from './SpecificBusDetail';
+import {SpecificBusDetail} from './right-panel/SpecificBusDetail';
 import {AddBusDetails} from './form-component/AddBusDetails';
 import './box.css';
-
-import {Card,Button} from "react-bootstrap";
+import { BusResaleValue } from './right-panel/BusResaleValue';
+import {Card} from "react-bootstrap";
 import axios from 'axios';
 
 
@@ -57,8 +57,10 @@ export class BusDetails extends React.Component
                 busData:busData,
                 isBusDetails:false
             })
+            console.log(this.state.busData);
 
         });
+
 
     }
 
@@ -79,21 +81,24 @@ export class BusDetails extends React.Component
                 <div className="grid">
                     {this.state.busData.map((bus) => {
                        return(<Card style={{ width: '5rem' }} className="box" onClick={() => this.busDetailsClicked(bus.busId)}>
-                       <Card.Img variant="top" src="holder.js/100px180" />
+                       <Card.Img variant="top" src={`data:image/jpeg;base64,${bus.image}`} className="img"/>
                            <Card.Body>
-                               <Card.Title>{bus.busName}</Card.Title>
-                               <Card.Text>
-                                  
-                               </Card.Text>
-                               <Button variant="primary">Go somewhere</Button>
+                               <Card.Title className="title">{bus.busName}</Card.Title>
                            </Card.Body>
                        </Card>)
                     })}
                 </div>
                 <div className="float-child">
+                    <div>
                     {
                      (this.state.isBusDetails ?  <SpecificBusDetail id={this.state.busId}></SpecificBusDetail> :<AddBusDetails/>)
                     }   
+                    </div>
+                    <div>
+                        {
+                        (this.state.isBusDetails ?  <BusResaleValue id={this.state.busId}></BusResaleValue> : "")
+                        }
+                    </div>
                 </div>
             </div>
         );

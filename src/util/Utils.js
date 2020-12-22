@@ -2,15 +2,34 @@
 
 export function getProperty(busObject)
 {
+
+    let defaultObject = {
+    }
+
     if(!isEmpty(busObject))
     {
         return busObject;
     }
     else
     {
-        return {};
+        return defaultObject;
     }
 };
+
+
+export function getFormData(busImage,busDetails)
+{
+    var formData = new FormData();
+    const json = JSON.stringify(busDetails);
+
+    const blob = new Blob([json], {
+                type: 'application/json'
+              });
+
+            formData.append("busDetails",blob);
+            formData.append("busImage",busImage);
+            return formData;
+}
 
 function isEmpty(obj) {
     for(var key in obj) {

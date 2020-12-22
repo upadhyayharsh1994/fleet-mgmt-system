@@ -8,7 +8,10 @@ export class AddBusDetails extends React.Component{
 
     render()
     {
-        var busObject = {};
+        var busObject = {
+            garageId:1,
+            status:"readyToUse"
+        };
        return (
            <div>
                 <BusDetailForm busObject={busObject} update={false}></BusDetailForm>
