@@ -1,5 +1,4 @@
-
-
+//Returning object to form based on parameter passed
 export function getProperty(busObject)
 {
 
@@ -16,7 +15,7 @@ export function getProperty(busObject)
     }
 };
 
-
+//Returning FormData object for POST api call
 export function getFormData(busImage,busDetails)
 {
     var formData = new FormData();
@@ -39,6 +38,8 @@ function isEmpty(obj) {
     return true;
 }
 
+
+//Bus Details Validation
 export function validateBusDetails(busDetails)
 {
     let errors = [];

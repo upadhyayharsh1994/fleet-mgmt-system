@@ -1,16 +1,13 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import { render } from 'react-dom';
 import { BrowserRouter, Route, Link} from 'react-router-dom';
 import {Header} from './header/Header';
 
 import {BusDetails} from './BusDetails';
 
-import {AddBusDetails} from './form-component/AddBusDetails';
 
-
+//Root Class to define route for home page
 class RootClass extends React.Component
 {
   render()

@@ -13,7 +13,7 @@ export class SpecificBusDetail extends React.Component{
         }
     }
 
-
+    //Function handles REST API call to get specific details whevever this component receives object
     componentWillReceiveProps(props)
     {
         var id = props.id;
@@ -27,6 +27,7 @@ export class SpecificBusDetail extends React.Component{
 
     }
 
+    //Before mounting the component, Retrieving bus details from REST API
     componentWillMount()
     {
         var id = this.state.busId;

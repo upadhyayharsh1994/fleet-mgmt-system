@@ -5,10 +5,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
 import {getProperty,validateBusDetails,getFormData} from '../util/Utils'
 
+const serverUrl = 'http://localhost:8080/fleet';
 export class BusDetailForm extends React.Component{
-
-    constructor(props)
-    {
+    //Initializing all the props received with redirect false to control redirecting to BusDetails component
+    constructor(props){
         super(props);
         this.state={
             busDetails:getProperty(props.busObject),
@@ -20,59 +20,50 @@ export class BusDetailForm extends React.Component{
 
     }
 
-
-    componentWillReceiveProps(props)
-    {
+    // Whenever bus details is sent from BussDetails component, form should be updated
+    componentWillReceiveProps(props){
         this.setState({
             busDetails:props.busObject,
             update:props.update
         })
-
-        console.log(this.state.busDetails);
     }
 
-    handleChange(e)
-    {
+    //Handling function when form details is edited and updated in state
+    handleChange(e){
 
-        var busDetailLocal = this.state.busDetails;
-        var elementName = e.target.name;
+        let busDetailLocal = this.state.busDetails;
+        let elementName = e.target.name;
         busDetailLocal[elementName] = e.target.value;
         this.setState({
                 busDetails: busDetailLocal,
         });
-
-
     }
 
-    handleImage(e)
-    {
+    //Handling whenever image is updated
+    handleImage(e){
         this.setState({
                 busImage: e.target.files[0]
         });
     }
 
-    handleSubmit(e)
-    {
-        var redirect = true;
-        var error = [];
-        var busDetailsLocal = this.state.busDetails;
-        var errors = validateBusDetails(busDetailsLocal);
-        console.log(busDetailsLocal);
-        if(errors.length > 0)
-        {
+    //Submit function handling for both Update and Insert Bus details using validation in Utils.js and API call
+    handleSubmit(e){
+        let redirect = true;
+        let error = [];
+        let busDetailsLocal = this.state.busDetails;
+        let errors = validateBusDetails(busDetailsLocal);
+        if(errors.length > 0){
             this.setState({
                 errors:errors
             })
             e.preventDefault();
             return false;
         }
-        else
-        {
-
-            var formData = getFormData(this.state.busImage,this.state.busDetails);
+        else{
+            let formData = getFormData(this.state.busImage,this.state.busDetails);
             if(this.state.update)
             {
-                axios.post('http://localhost:8080/fleet/editBusDetail',formData, 
+                axios.post(serverUrl+'/editBusDetail',formData, 
                 {   
                     headers: {
                     'Content-Type':'multipart/form-data'
@@ -88,8 +79,8 @@ export class BusDetailForm extends React.Component{
             }
             else
             {
-                var formData = getFormData(this.state.busImage,this.state.busDetails);
-                axios.post('http://localhost:8080/fleet/insertBusDetails',formData, 
+                let formData = getFormData(this.state.busImage,this.state.busDetails);
+                axios.post(serverUrl+'/fleet/insertBusDetails',formData, 
                 {   
                     headers: {
                     'Content-Type':'multipart/form-data'
@@ -107,9 +98,11 @@ export class BusDetailForm extends React.Component{
     }
 
 
+
+    //Handling of delete functionaity when button is clicked through API call
     delete(e)
     {
-        axios.post('http://localhost:8080/fleet/deleteBusDetails/'+this.state.busDetails.busId).then((result)=>{
+        axios.post(serverUrl+'/deleteBusDetails/'+this.state.busDetails.busId).then((result)=>{
             this.setState({
                 redirect:true,
             })
@@ -121,6 +114,7 @@ export class BusDetailForm extends React.Component{
     render()
     {
        return (
+           //When redirect is true it redirects to BusDetails. This is done whenever update,delete or addition is done
         this.state.redirect ? <Redirect push to="/"/> :  
            <div>
                {
@@ -132,17 +126,42 @@ export class BusDetailForm extends React.Component{
                <form onSubmit  ={this.handleSubmit.bind(this)}>
                <Form.Group>Fleet Name</Form.Group>
                <Form.Control type="text" name="busName" value={this.state.busDetails.busName} onChange={this.handleChange.bind(this)}/>
-                {
-                    (!this.props.update ? <div><Form.Group>Make Year</Form.Group><Form.Control type="text" name="makeYear" value={this.state.busDetails.makeYear} onChange={this.handleChange.bind(this)}/> </div> : " ")  
-                } 
+               <Form.Group>Make Year</Form.Group><Form.Control type="text" name="makeYear" value={this.state.busDetails.makeYear} onChange={this.handleChange.bind(this)}/>
                <Form.Group>No Of Wheels</Form.Group>
-               <Form.Control type="text" name="numberOfWheels" value={this.state.busDetails.numberOfWheels} onChange={this.handleChange.bind(this)}/> 
+               <Form.Control as="select"
+                    className="mr-sm-2"
+                    id="inlineFormCustomSelect" 
+                    onChange={this.handleChange.bind(this)}
+                    value={this.state.busDetails.numberOfWheels}
+                    name="numberOfWheels"
+                    custom><br/>
+                    <option value="2">2</option>
+                    <option value="4">4</option>
+                </Form.Control><br/>
                <Form.Group>Odometer Rating</Form.Group>
                <Form.Control type="text" name="odometerReading" value={this.state.busDetails.odometerReading} onChange={this.handleChange.bind(this)}/>  
                <Form.Group>Air Conditioned</Form.Group>
-               <Form.Control type="text" name="airConditioner" value={this.state.busDetails.airConditioner} onChange={this.handleChange.bind(this)}/> 
+               <Form.Control as="select"
+                    className="mr-sm-2"
+                    id="inlineFormCustomSelect" 
+                    onChange={this.handleChange.bind(this)}
+                    value={this.state.busDetails.airConditioner}
+                    name="airConditioner"
+                    custom><br/>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </Form.Control><br/>
                <Form.Group>Capacity</Form.Group>
-               <Form.Control type="text" name="capacity" value={this.state.busDetails.capacity} onChange={this.handleChange.bind(this)}/> 
+               <Form.Control as="select"
+                    className="mr-sm-2"
+                    id="inlineFormCustomSelect" 
+                    onChange={this.handleChange.bind(this)}
+                    value={this.state.busDetails.capacity}
+                    name="capacity"
+                    custom><br/>
+                    <option value="24">24</option>
+                    <option value="36">36</option>
+               </Form.Control><br/>
                <Form.Group>Bus Image</Form.Group>
                <Form.File type="file" name="image" accept="image/png, image/jpeg"  onChange={this.handleImage.bind(this)}/> 
                <Form.Group>Status</Form.Group>
@@ -159,12 +178,12 @@ export class BusDetailForm extends React.Component{
                 </Form.Control><br/>
                 <Form.Group>Garage Id</Form.Group>
                 <Form.Control as="select"
-        className="mr-sm-2"
-        id="inlineFormCustomSelect" 
-        onChange={this.handleChange.bind(this)}
-        value={this.state.busDetails.garageId}
-        name="garageId"
-        custom><br/>
+                    className="mr-sm-2"
+                    id="inlineFormCustomSelect" 
+                    onChange={this.handleChange.bind(this)}
+                    value={this.state.busDetails.garageId}
+                    name="garageId"
+                    custom><br/>
                     <option value="1" selected>1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>

@@ -13,6 +13,7 @@ export class BusResaleValue extends React.Component{
         }
     }
 
+    //Resale value calculated when Bus Image is clicked first time
     componentWillMount()
     {
         axios.get('http://localhost:8080/fleet/resaleValue/'+this.state.busId).then((response) => {
@@ -24,7 +25,7 @@ export class BusResaleValue extends React.Component{
         });
     }
 
-
+    //Resale value calculated whenever Bus Image is clicked
     componentWillReceiveProps(props)
     {
         axios.get('http://localhost:8080/fleet/resaleValue/'+props.id).then((response) => {
@@ -35,7 +36,6 @@ export class BusResaleValue extends React.Component{
 
         });
     }
-
 
     render(){
 

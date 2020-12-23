@@ -2,7 +2,6 @@ import React from "react";
 import {Button, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
 export class Header extends React.Component
 {
     render(){

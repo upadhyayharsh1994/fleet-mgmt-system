@@ -1,12 +1,10 @@
 import React from "react";
-
 import {SpecificBusDetail} from './right-panel/SpecificBusDetail';
 import {AddBusDetails} from './form-component/AddBusDetails';
 import './box.css';
 import { BusResaleValue } from './right-panel/BusResaleValue';
 import {Card} from "react-bootstrap";
 import axios from 'axios';
-
 
 export class BusDetails extends React.Component
 {
@@ -20,13 +18,13 @@ export class BusDetails extends React.Component
         }
     }
 
-    componentWillReceiveProps(props)
-    {
-        var busData = [];
-         axios.get('http://localhost:8080/fleet/getAllDetails').then((response) => {
+    //Whenever Redirect is called from Other Compoenent to BusDetails, Bus Data should be refreshed from REST API call
+    componentWillReceiveProps(props){
+        let busData = [];
+         axios.get('/fleet/getAllDetails').then((response) => {
             if(response)
             {
-                for(var busDetails of response.data)
+                for(const busDetails of response.data)
                 {
                     busData.push(busDetails);
                 }
@@ -40,10 +38,12 @@ export class BusDetails extends React.Component
         });
     }
 
+
+    //Before Component is mounted, API call to retrieve bus information
     componentWillMount()
     {
 
-        var busData = [];
+        let busData = [];
         axios.get('http://localhost:8080/fleet/getAllDetails').then((response) => {
             if(response)
             {
@@ -57,13 +57,13 @@ export class BusDetails extends React.Component
                 busData:busData,
                 isBusDetails:false
             })
-            console.log(this.state.busData);
 
         });
 
 
     }
 
+    //Event Handling whever bus image is clicked so that SpecificDetails is rendered on the right
     busDetailsClicked(busId) {
 
         this.setState({
@@ -77,13 +77,13 @@ export class BusDetails extends React.Component
 
     render(){
         return(
-            <div class="floar-container"> 
+            <div className="float-container"> 
                 <div className="grid">
                     {this.state.busData.map((bus) => {
                        return(<Card style={{ width: '5rem' }} className="box" onClick={() => this.busDetailsClicked(bus.busId)}>
                        <Card.Img variant="top" src={`data:image/jpeg;base64,${bus.image}`} className="img"/>
                            <Card.Body>
-                               <Card.Title className="title">{bus.busName}</Card.Title>
+                               <Card.Title className="title">{bus.busName} </Card.Title>
                            </Card.Body>
                        </Card>)
                     })}
@@ -91,11 +91,13 @@ export class BusDetails extends React.Component
                 <div className="float-child">
                     <div>
                     {
+                    //  Check if the details is clicked so that SpecificDetails is displayed
                      (this.state.isBusDetails ?  <SpecificBusDetail id={this.state.busId}></SpecificBusDetail> :<AddBusDetails/>)
                     }   
                     </div>
                     <div>
                         {
+                        //  Check if the details is clicked so that Resale value  is displayed
                         (this.state.isBusDetails ?  <BusResaleValue id={this.state.busId}></BusResaleValue> : "")
                         }
                     </div>
